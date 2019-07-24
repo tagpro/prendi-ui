@@ -113,47 +113,51 @@ function useCanvas(canvasRef, sketchRef, dispatch) {
     useEffect(() => {
         let path;
         let canvas = canvasRef.current;
-        var ctx = canvas.getContext('2d');
+        if (canvas) {
+            var ctx = canvas.getContext('2d');
 
-        canvas.width = sketchRef.current.clientWidth - 10;
-        canvas.height = sketchRef.current.clientHeight - 10;
+            canvas.width = sketchRef.current.clientWidth - 10;
+            canvas.height = sketchRef.current.clientHeight - 10;
 
-        var mouse = { x: 0, y: 0 };
+            var mouse = { x: 0, y: 0 };
 
-        /* Mouse Capturing Work */
-        canvas.addEventListener('mousemove', function (e) {
-            mouse.x = e.pageX - this.offsetLeft;
-            mouse.y = e.pageY - this.offsetTop;
-        }, false);
+            /* Mouse Capturing Work */
+            canvas.addEventListener('mousemove', function (e) {
+                mouse.x = e.pageX - this.offsetLeft;
+                mouse.y = e.pageY - this.offsetTop;
+            }, false);
 
-        /* Drawing on Paint App */
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
+            /* Drawing on Paint App */
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
 
-        ctx.strokeStyle = "red";
-        function getColor(colour) { ctx.strokeStyle = colour; }
+            ctx.strokeStyle = "red";
+            function getColor(colour) { ctx.strokeStyle = colour; }
 
 
-        //ctx.strokeStyle =
-        //ctx.strokeStyle = document.settings.colour[1].value;
-        canvas.addEventListener('mousedown', function (e) {
-            path = ctx.beginPath();
-            lastStroke = [];
-            dispatch({ type: DISPATCH_TYPE.INCREMENT_CLICKS });
-            ctx.moveTo(mouse.x, mouse.y);
+            //ctx.strokeStyle =
+            //ctx.strokeStyle = document.settings.colour[1].value;
+            canvas.addEventListener('mousedown', function (e) {
+                path = ctx.beginPath();
+                lastStroke = [];
+                dispatch({ type: DISPATCH_TYPE.INCREMENT_CLICKS });
+                ctx.moveTo(mouse.x, mouse.y);
 
-            canvas.addEventListener('mousemove', updatePaint, false);
-        }, false);
+                canvas.addEventListener('mousemove', updatePaint, false);
+            }, false);
 
-        canvas.addEventListener('mouseup', function () {
-            ctx.closePath();
-            canvas.removeEventListener('mousemove', updatePaint, false);
-        }, false);
+            canvas.addEventListener('mouseup', function () {
+                ctx.closePath();
+                canvas.removeEventListener('mousemove', updatePaint, false);
+            }, false);
 
-        let updatePaint = function () {
-            onPaint(ctx, mouse);
+            let updatePaint = function () {
+                onPaint(ctx, mouse);
+            }
         }
+        return function () {
 
+        }
     }, [])
     var onPaint = function (ctx, mouse) {
         ctx.lineTo(mouse.x, mouse.y);
