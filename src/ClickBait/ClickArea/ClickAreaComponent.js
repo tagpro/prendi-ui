@@ -88,11 +88,9 @@ export default function ClickAreaComponent(props) {
                 let ctx = canvas.getContext('2d');
                 let lastPoint = []
                 for (let point of lastStroke) {
-                    console.log(point);
                     ctx.clearRect(...rootPoint(point[0], point[1]))
                     if (lastPoint.length) {
                         let points = interpolate(lastPoint[0], lastPoint[1], point[0], point[1]);
-                        console.log(points);
                         for (let interPoint of points) {
                             ctx.clearRect(...rootPoint(interPoint[0], interPoint[1]))
                         }
@@ -149,9 +147,7 @@ function useCanvas(canvasRef, sketchRef, dispatch) {
 
         canvas.addEventListener('mouseup', function () {
             ctx.closePath();
-            console.log(path);
             canvas.removeEventListener('mousemove', updatePaint, false);
-            console.log(lastStroke)
         }, false);
 
         let updatePaint = function () {
