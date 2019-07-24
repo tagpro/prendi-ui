@@ -7,12 +7,18 @@ export default function ClickPanelComponent() {
     let [sessionClicks, setSessionClicks] = useState(0);
     let {state, dispatch} = useContext(PaintContext);
 
-    let selectedText = function(event) {
+    const selectedText = function(event) {
         dispatch({
             type: DISPATCH_TYPE.UPDATE_COLOR,
             data: {
                 color: event.target.value
             }
+        });
+    }
+
+    const save = function () {
+        dispatch({
+            type: DISPATCH_TYPE.SAVE,
         });
     }
     return (
@@ -27,7 +33,7 @@ export default function ClickPanelComponent() {
                     </select>
                 </div>
                 <div className="panel-save">
-                    <button>Save</button>
+                    <button onClick={save}>Save</button>
                     <button>Undo</button>
                 </div>
                 <div className="panel-click-counter">

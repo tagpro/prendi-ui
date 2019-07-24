@@ -1,4 +1,11 @@
 import React, { createContext, useReducer, useState } from 'react';
+const axios = require('axios');
+const BASE_URL = 'http://localhost:8080/api/v1';
+const instance = axios.create({
+    baseURL: BASE_URL,
+    timeout: 1000
+});
+
 const initialContext = () => {
     return {
         save: false,
@@ -11,12 +18,28 @@ const initialContext = () => {
 export const DISPATCH_TYPE = {
     RESET: 'reset',
     SAVE: 'save',
-    UPDATE_CANVAS: 'updateCanvas',
     SAVE_CANVAS: 'saveCanvas',
+    SAVED_CANVAS: 'savedCanvas',
     UPDATE_COLOR: 'updateColor',
     INCREMENT_CLICKS: 'incrementClicks',
 };
 
+let uploadCanvas = function (dataURL) {
+    // I am assuming that our service would work and will be up 100% of the time.
+    // This can be improved by handling errors in the reducer and dispatching to a error handling component.
+    instance.post('/entity', {
+        canvas: dataURL,
+    }).then(() => {
+        value.dispatch({
+            type: DISPATCH_TYPE.SAVED_CANVAS
+        })
+    }).catch(() => {
+        console.error('Could not save the canvas');
+        value.dispatch({
+            type: DISPATCH_TYPE.SAVED_CANVAS
+        })
+    })
+}
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -30,7 +53,11 @@ const reducer = (state, action) => {
             }
         }
         case DISPATCH_TYPE.SAVE_CANVAS: {
-            console.log('action.data')
+            console.log(action.data)
+            uploadCanvas(action.data.uri)
+            return state
+        }
+        case DISPATCH_TYPE.SAVED_CANVAS: {
             return {
                 ...state,
                 save: false
@@ -51,11 +78,12 @@ const reducer = (state, action) => {
 };
 
 const PaintContext = createContext(initialContext);
+let value = {};
 
 export default function PaintContextProvider(props) {
     const [context] = useState(initialContext);
     const [state, dispatch] = useReducer(reducer, context);
-    let value = { state, dispatch };
+    value = { state, dispatch };
 
     return (
         <PaintContext.Provider value={value}>

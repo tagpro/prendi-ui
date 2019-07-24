@@ -11,7 +11,7 @@ export default function ClickAreaComponent(props) {
     useEffect(() => {
         if (state.save) {
             dispatch({
-                type: 'UPDATE_CANVAS',
+                type: DISPATCH_TYPE.SAVE_CANVAS,
                 data: {
                     uri: canvasRef.current.toDataURL()
                 }
