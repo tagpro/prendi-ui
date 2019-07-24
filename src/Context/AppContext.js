@@ -1,10 +1,17 @@
 import React, { createContext, useReducer, useState } from 'react';
 const initialContext = () => {
-    return {};
+    return {
+        save: false,
+        color: 'red'
+    };
 };
 
 export const DISPATCH_TYPE = {
-    RESET: 'reset'
+    RESET: 'reset',
+    SAVE: 'save',
+    UPDATE_CANVAS: 'updateCanvas',
+    SAVE_CANVAS: 'saveCanvas',
+    UPDATE_COLOR: 'updateColor',
 };
 
 
@@ -13,25 +20,42 @@ const reducer = (state, action) => {
         case DISPATCH_TYPE.RESET: {
             return initialContext;
         }
+        case DISPATCH_TYPE.SAVE: {
+            return {
+                ...state,
+                save: true
+            }
+        }
+        case DISPATCH_TYPE.SAVE_CANVAS: {
+            console.log('action.data')
+            return {
+                ...state,
+                save: false
+            }
+        }
+        case DISPATCH_TYPE.UPDATE_COLOR: return {
+            ...state,
+            color: action.data.color
+        }
         default:
             return state;
     }
 };
 
-const ExplorerContext = createContext(initialContext);
+const PaintContext = createContext(initialContext);
 
-export default function ExplorerContextProvider(props) {
+export default function PaintContextProvider(props) {
     const [context] = useState(initialContext);
     const [state, dispatch] = useReducer(reducer, context);
     let value = { state, dispatch };
 
     return (
-        <ExplorerContext.Provider value={value}>
+        <PaintContext.Provider value={value}>
             {props.children}
-        </ExplorerContext.Provider>
+        </PaintContext.Provider>
     );
 }
 
-const ContextOneConsumer = ExplorerContext.Consumer;
+const PaintContextConsumer = PaintContext.Consumer;
 
-export { ExplorerContext, ExplorerContextProvider, ContextOneConsumer };
+export { PaintContext, PaintContextProvider, PaintContextConsumer };

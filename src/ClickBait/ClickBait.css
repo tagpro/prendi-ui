@@ -1,0 +1,8 @@
+.click-panel {
+    height: 10vh;
+}
+
+.click-area {
+    height: 90vh;
+    display: flex;
+}

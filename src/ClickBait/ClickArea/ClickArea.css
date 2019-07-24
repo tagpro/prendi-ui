@@ -1,0 +1,9 @@
+#sketch {
+  display: flex;
+  flex: 1;
+}
+
+#paint {
+  border: 1px solid black;
+  background: white;
+}
