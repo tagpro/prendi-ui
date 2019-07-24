@@ -32,3 +32,5 @@ PS: This project was built in a day so might be bit untidy.
 ## Contact info
 If you have any issues or want to find more about the project, please call me on 0450 327 168 or email me on jaspreet.singh.kler at gmail.com 
 
+### Honorable mentions
+1. https://codepen.io/HarryGateaux/pen/BApxl used this to create the drawing board.
