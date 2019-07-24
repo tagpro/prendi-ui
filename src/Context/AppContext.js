@@ -40,7 +40,7 @@ let loadCanvas = function () {
             data: res.data
         });
     }).catch((error) => {
-        console.error('Could not load canvas from server', error);
+        alert('Could not load canvas from server. Please see if the backend server is up and running.');
     })
 }
 
@@ -55,7 +55,7 @@ let uploadCanvas = function (dataURL) {
             type: DISPATCH_TYPE.SAVED_CANVAS
         })
     }).catch(() => {
-        console.error('Could not save the canvas');
+        alert('Could not save the canvas. Please see if the backend server is up and running.');
         value.dispatch({
             type: DISPATCH_TYPE.SAVED_CANVAS
         })
