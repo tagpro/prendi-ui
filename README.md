@@ -1,7 +1,8 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Install script
-1. `npm install`
+1. Clone the repo and navigate to the root of the project in a shell.
+2. `npm install`
 
 ## Available Scripts
 
