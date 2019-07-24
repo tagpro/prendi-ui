@@ -1,13 +1,13 @@
 import React, { useRef, useEffect, useContext } from 'react';
-import { PaintContext } from './../../Context/AppContext';
+import { PaintContext, DISPATCH_TYPE } from './../../Context/AppContext';
 import './ClickArea.css'
 let lastStroke = [];
 
 export default function ClickAreaComponent(props) {
     let canvasRef = useRef(null);
     let sketchRef = useRef(null);
-    useCanvas(canvasRef, sketchRef);
-    let {state, dispatch} = useContext(PaintContext);
+    let { state, dispatch } = useContext(PaintContext);
+    useCanvas(canvasRef, sketchRef, dispatch);
     useEffect(() => {
         if (state.save) {
             dispatch({
@@ -21,7 +21,6 @@ export default function ClickAreaComponent(props) {
 
     useEffect(() => {
         let canvas = canvasRef.current;
-        console.log('Color update?', state)
         if (canvas) {
             let ctx = canvas.getContext('2d');
             ctx.strokeStyle = state.color;
@@ -34,7 +33,7 @@ export default function ClickAreaComponent(props) {
     )
 }
 
-function useCanvas(canvasRef, sketchRef) {
+function useCanvas(canvasRef, sketchRef, dispatch) {
     useEffect(() => {
         let canvas = canvasRef.current;
         var ctx = canvas.getContext('2d');
@@ -63,6 +62,7 @@ function useCanvas(canvasRef, sketchRef) {
         canvas.addEventListener('mousedown', function (e) {
             ctx.beginPath();
             lastStroke = [];
+            dispatch({ type: DISPATCH_TYPE.INCREMENT_CLICKS });
             ctx.moveTo(mouse.x, mouse.y);
 
             canvas.addEventListener('mousemove', updatePaint, false);
@@ -73,7 +73,7 @@ function useCanvas(canvasRef, sketchRef) {
             console.log(lastStroke)
         }, false);
 
-        let updatePaint = function() {
+        let updatePaint = function () {
             onPaint(ctx, mouse);
         }
 

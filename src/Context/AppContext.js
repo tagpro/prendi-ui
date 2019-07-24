@@ -2,7 +2,9 @@ import React, { createContext, useReducer, useState } from 'react';
 const initialContext = () => {
     return {
         save: false,
-        color: 'red'
+        color: 'red',
+        totalClicks: 0,
+        sessionClicks: 0,
     };
 };
 
@@ -12,6 +14,7 @@ export const DISPATCH_TYPE = {
     UPDATE_CANVAS: 'updateCanvas',
     SAVE_CANVAS: 'saveCanvas',
     UPDATE_COLOR: 'updateColor',
+    INCREMENT_CLICKS: 'incrementClicks',
 };
 
 
@@ -36,6 +39,11 @@ const reducer = (state, action) => {
         case DISPATCH_TYPE.UPDATE_COLOR: return {
             ...state,
             color: action.data.color
+        }
+        case DISPATCH_TYPE.INCREMENT_CLICKS: return {
+            ...state,
+            totalClicks: state.totalClicks + 1,
+            sessionClicks: state.sessionClicks + 1,
         }
         default:
             return state;
