@@ -58,6 +58,52 @@ export default function ClickAreaComponent(props) {
             ctx.strokeStyle = state.color;
         }
     }, [state.color, state.clear])
+
+    function interpolate(x1, y1, x2, y2) {
+        let numOfPoints = Math.max(Math.abs(x1 - x2), Math.abs(y1 - y2));
+        let points = [];
+        let xInc = (x2 - x1) / numOfPoints;
+        let yInc = (y2 - y1) / numOfPoints;
+        for(let i = 0; i < numOfPoints; i++) {
+            x1 += xInc;
+            y1 += yInc;
+            points.push([Math.round(x1), Math.round(y1)])
+        }
+        return points;
+    }
+    function rootPoint(x, y) {
+        return [x - 2 < 0 ? 0 : x - 2, y - 2 < 0 ? 0 : y - 2, 4, 4]
+    }
+    // Undo last stroke
+    /**
+     * I am using clearRect to remove all the points from the last stroke.
+     * The issue is that stroke my not contain all the points in the path.
+     * So, I am using interpolation to get all the points between two points.
+     */
+    useEffect(() => {
+        if(state.undo) {
+            let canvas = canvasRef.current;
+            // TODO:
+            if (canvas) {
+                let ctx = canvas.getContext('2d');
+                let lastPoint = []
+                for (let point of lastStroke) {
+                    console.log(point);
+                    ctx.clearRect(...rootPoint(point[0], point[1]))
+                    if (lastPoint.length) {
+                        let points = interpolate(lastPoint[0], lastPoint[1], point[0], point[1]);
+                        console.log(points);
+                        for (let interPoint of points) {
+                            ctx.clearRect(...rootPoint(interPoint[0], interPoint[1]))
+                        }
+                    }
+                    lastPoint = point;
+                }
+            }
+            dispatch({type: DISPATCH_TYPE.UNDO_COMPLETE});
+        }
+    }, [state.undo])
+
     return (
         <div ref={sketchRef} id="sketch">
             <canvas ref={canvasRef} id="paint"></canvas>
@@ -67,6 +113,7 @@ export default function ClickAreaComponent(props) {
 
 function useCanvas(canvasRef, sketchRef, dispatch) {
     useEffect(() => {
+        let path;
         let canvas = canvasRef.current;
         var ctx = canvas.getContext('2d');
 
@@ -92,7 +139,7 @@ function useCanvas(canvasRef, sketchRef, dispatch) {
         //ctx.strokeStyle =
         //ctx.strokeStyle = document.settings.colour[1].value;
         canvas.addEventListener('mousedown', function (e) {
-            ctx.beginPath();
+            path = ctx.beginPath();
             lastStroke = [];
             dispatch({ type: DISPATCH_TYPE.INCREMENT_CLICKS });
             ctx.moveTo(mouse.x, mouse.y);
@@ -101,6 +148,8 @@ function useCanvas(canvasRef, sketchRef, dispatch) {
         }, false);
 
         canvas.addEventListener('mouseup', function () {
+            ctx.closePath();
+            console.log(path);
             canvas.removeEventListener('mousemove', updatePaint, false);
             console.log(lastStroke)
         }, false);
@@ -113,7 +162,7 @@ function useCanvas(canvasRef, sketchRef, dispatch) {
     var onPaint = function (ctx, mouse) {
         ctx.lineTo(mouse.x, mouse.y);
         ctx.stroke();
-        lastStroke = [...lastStroke, mouse];
+        lastStroke = [...lastStroke, [mouse.x, mouse.y]];
     };
 
     return lastStroke;

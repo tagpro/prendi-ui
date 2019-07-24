@@ -29,6 +29,8 @@ export const DISPATCH_TYPE = {
     INCREMENT_CLICKS: 'incrementClicks',
     CLEAR: 'clear',
     CLEARED: 'cleared',
+    UNDO: 'undo',
+    UNDO_COMPLETE: 'undoed',
 };
 
 let loadCanvas = function () {
@@ -108,7 +110,20 @@ const reducer = (state, action) => {
         case DISPATCH_TYPE.CLEARED:
             return {
                 ...state,
-                clear: false
+                clear: false,
+                totalClicks: 0,
+                sessionClicks: 0,
+            }
+        case DISPATCH_TYPE.UNDO:
+            return {
+                ...state,
+                undo: true
+            }
+
+        case DISPATCH_TYPE.UNDO_COMPLETE:
+            return {
+                ...state,
+                undo: false
             }
         default:
             return state;

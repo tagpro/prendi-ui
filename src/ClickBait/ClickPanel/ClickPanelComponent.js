@@ -21,6 +21,10 @@ export default function ClickPanelComponent() {
     const clear = function () {
         dispatch({ type: DISPATCH_TYPE.CLEAR });
     }
+
+    const undo = function () {
+        dispatch({ type: DISPATCH_TYPE.UNDO });
+    }
     return (
         <div>
             <div className="panel-wrapper">
@@ -35,7 +39,7 @@ export default function ClickPanelComponent() {
                 <div className="panel-save">
                     <button onClick={save}>Save</button>
                     <button onClick={clear}>Clear</button>
-                    <button>Undo</button>
+                    <button onClick={undo}>Undo</button>
                 </div>
                 <div className="panel-click-counter">
                     <div>
