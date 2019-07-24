@@ -1,13 +1,11 @@
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react';
 import './ClickPanel.css';
 import { PaintContext, DISPATCH_TYPE } from '../../Context/AppContext';
 
 export default function ClickPanelComponent() {
-    let [clicks, setClicks] = useState(0);
-    let [sessionClicks, setSessionClicks] = useState(0);
-    let {state, dispatch} = useContext(PaintContext);
+    let { state, dispatch } = useContext(PaintContext);
 
-    const selectedText = function(event) {
+    const selectedText = function (event) {
         dispatch({
             type: DISPATCH_TYPE.UPDATE_COLOR,
             data: {
@@ -17,9 +15,11 @@ export default function ClickPanelComponent() {
     }
 
     const save = function () {
-        dispatch({
-            type: DISPATCH_TYPE.SAVE,
-        });
+        dispatch({ type: DISPATCH_TYPE.SAVE });
+    }
+
+    const clear = function () {
+        dispatch({ type: DISPATCH_TYPE.CLEAR });
     }
     return (
         <div>
@@ -34,14 +34,15 @@ export default function ClickPanelComponent() {
                 </div>
                 <div className="panel-save">
                     <button onClick={save}>Save</button>
+                    <button onClick={clear}>Clear</button>
                     <button>Undo</button>
                 </div>
                 <div className="panel-click-counter">
                     <div>
-                        <span>Total Clicks: {clicks}</span>
+                        <span>Total Clicks: {state.totalClicks}</span>
                     </div>
                     <div>
-                        <span>Clicks in this session: {sessionClicks}</span>
+                        <span>Clicks in this session: {state.sessionClicks}</span>
                     </div>
                 </div>
             </div>

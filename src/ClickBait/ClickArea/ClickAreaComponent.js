@@ -7,7 +7,9 @@ export default function ClickAreaComponent(props) {
     let canvasRef = useRef(null);
     let sketchRef = useRef(null);
     let { state, dispatch } = useContext(PaintContext);
+    // Initialize canvas before using other effects
     useCanvas(canvasRef, sketchRef, dispatch);
+
     useEffect(() => {
         if (state.save) {
             dispatch({
@@ -19,13 +21,43 @@ export default function ClickAreaComponent(props) {
         }
     }, [state.save])
 
+    // Load the canvas from the server
+    useEffect(() => {
+        if (state.baseURL != null) {
+            let myCanvas = canvasRef.current;
+            if (myCanvas) {
+                var ctx = myCanvas.getContext('2d');
+                var img = new Image();
+                img.src = state.baseURL;
+                img.onload = function () {
+                    ctx.drawImage(img, 0, 0); // Or at whatever offset you like
+                };
+            }
+        }
+    }, [state.baseURL]);
+
+    // Clear the drawing board
+    useEffect(() => {
+        if (state.clear) {
+            let myCanvas = canvasRef.current;
+            if (myCanvas) {
+                var ctx = myCanvas.getContext('2d');
+                // Hack to clear the canvas
+                // eslint-disable-next-line no-self-assign
+                ctx.canvas.width = ctx.canvas.width;
+                dispatch({ type: DISPATCH_TYPE.CLEARED});
+            }
+        }
+    }, [state.clear])
+
+    // Change the color in canvas
     useEffect(() => {
         let canvas = canvasRef.current;
         if (canvas) {
             let ctx = canvas.getContext('2d');
             ctx.strokeStyle = state.color;
         }
-    }, [state.color])
+    }, [state.color, state.clear])
     return (
         <div ref={sketchRef} id="sketch">
             <canvas ref={canvasRef} id="paint"></canvas>
